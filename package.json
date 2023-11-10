@@ -6,6 +6,9 @@
   "repository": "https://github.com/DevellSoftware/di",
   "author": "Filip Gorny",
   "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/jest/bin/jest.js --silent=false"
+  },
   "dependencies": {
     "@types/jest": "^29.5.8",
     "jest": "^29.7.0",
