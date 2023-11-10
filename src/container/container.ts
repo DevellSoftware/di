@@ -43,8 +43,5 @@ export class Container {
     return entry.getValue() as T;
   }
 
-  private initialize<T = any>(classEntry: ClassEntry) {
-    console.log(classEntry);
-    console.log(classEntry.getConstructorParams());
-  }
+  private initialize<T = any>(classEntry: ClassEntry) {}
 }

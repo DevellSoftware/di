@@ -10,7 +10,8 @@
     "allowJs": true,
     "baseUrl": "./src",
     "paths": {
-      "@container/*": ["./container/*"]
+      "@container/*": ["./container/*"],
+      "@foo/*": ["./foo/*"]
     }
   }
 }

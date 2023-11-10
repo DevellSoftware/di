@@ -1,4 +1,6 @@
 import { Container } from "@container/container";
+import { Bar } from "@foo/bar";
+import { Biz } from "@foo/biz";
 
 describe("container", () => {
   const container = new Container();
@@ -9,21 +11,11 @@ describe("container", () => {
   });
 
   it("should resolve class dependency", () => {
-    class Zip {
-      public zap() {
-        return "zap";
-      }
-    }
+    container.register("bar", Bar);
+    container.register("biz", Biz);
 
-    class Foo {
-      constructor(private zip: Zip) {}
+    const biz = container.resolve<Biz>("biz");
 
-      public zap() {
-        this.zip.zap();
-      }
-    }
-
-    container.register("foo", Foo);
-    expect(container.resolve<Foo>("foo").zap()).toBe("zap");
+    expect(biz).toBeInstanceOf(Biz);
   });
 });

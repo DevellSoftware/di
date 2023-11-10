@@ -1,20 +1,53 @@
 import { ClassType, Entry, EntryType } from "@container/entry/entry";
+import { Project, StructureKind, ts } from "ts-morph";
+import * as path from "path";
+import { ConstructorDeclaration } from "typescript";
 
 export class ClassEntry extends Entry {
   typeName: EntryType = "class";
   private value: ClassType;
+  static project: Project;
+
+  private classDeclaration: any;
 
   constructor(value: ClassType) {
     super();
 
     this.value = value;
+
+    if (ClassEntry.project == undefined) {
+      ClassEntry.project = new Project({
+        tsConfigFilePath: path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "tsconfig.json"
+        ),
+      });
+      ClassEntry.project.addSourceFilesAtPaths("src/**/*.ts");
+    }
+
+    ClassEntry.project.getSourceFiles().forEach((sourceFile) => {
+      sourceFile.getClasses().forEach((classDeclaration) => {
+        const constructor = classDeclaration
+          .getConstructors()
+          .forEach((constructor) => {
+            const constValue = ClassEntry.project.getSourceFileOrThrow(
+              constructor.getSourceFile().getFilePath()
+            );
+
+            constValue.get;
+          });
+      });
+    });
   }
 
   getValue(): ClassType {
     return this.value;
   }
 
-  static isClass(target: any): target is ClassType {
+  public static isClass(target: any): target is ClassType {
     return !(
       target &&
       typeof target === "object" &&
