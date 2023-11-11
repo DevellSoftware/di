@@ -11,11 +11,13 @@ The first thing to do when using it is to create a `Container` class instance.
 ```
 import { Container } from "@container/container";
 import { Logger } from "@logger/logger";
+import { Injectable } from "@container/decorators/injectable";
 
 const container = new Container();
 
 container.register("logger", Logger);
 
+@Injectable()
 class InvoiceRegistry {
     constructor(private logger: Logger) {}
 }
