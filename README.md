@@ -19,10 +19,13 @@ container.register("logger", Logger);
 
 @Injectable()
 class InvoiceRegistry {
-    constructor(private logger: Logger) {}
+    constructor(public logger: Logger) {}
 }
 
 container.register("invoice-registry", InvoiceRegistry);
+
+const invoiceRegistry = container.resolve("invoice-registry");
+invoiceRegistry.logger.log("It is working.");
 
 ```
 
