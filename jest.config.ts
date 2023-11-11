@@ -7,7 +7,7 @@ const jestConfig: JestConfigWithTsJest = {
   preset: "ts-jest/presets/js-with-ts-esm",
   moduleNameMapper: {
     "^@container/(.*)$": ["<rootDir>/src/container/$1"],
-    "^@foo/(.*)$": ["<rootDir>/src/foo/$1"],
+    "^@foo/(.*)$": ["<rootDir>/test/foo/$1"],
   },
 };
 

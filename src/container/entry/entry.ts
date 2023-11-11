@@ -1,4 +1,4 @@
-export type EntryType = "class" | "object" | "function";
+export type EntryType = "class" | "object" | "function" | "factory";
 export type ClassType = { new (...args: any[]): any };
 export type EntryValue = Function | object | ClassType;
 

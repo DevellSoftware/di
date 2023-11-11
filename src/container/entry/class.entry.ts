@@ -1,78 +1,95 @@
+import {
+  REFLECT_INJECTABLE,
+  REFLECT_INJECTABLE_PARAMS,
+} from "@container/decorators/injectable.decorator";
 import { ClassType, Entry, EntryType } from "@container/entry/entry";
-import { Project, StructureKind, ts } from "ts-morph";
-import * as path from "path";
-import { ConstructorDeclaration } from "typescript";
+import { ElementNotDeclaredAsInjectableException } from "@container/exception/element-not-declared-as-injectable.exception";
+import "reflect-metadata";
 
 export class ClassEntry extends Entry {
   typeName: EntryType = "class";
   private value: ClassType;
-  static project: Project;
-
-  private classDeclaration: any;
 
   constructor(value: ClassType) {
     super();
 
     this.value = value;
-
-    if (ClassEntry.project == undefined) {
-      ClassEntry.project = new Project({
-        tsConfigFilePath: path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "tsconfig.json"
-        ),
-      });
-      ClassEntry.project.addSourceFilesAtPaths("src/**/*.ts");
-    }
-
-    ClassEntry.project.getSourceFiles().forEach((sourceFile) => {
-      sourceFile.getClasses().forEach((classDeclaration) => {
-        const constructor = classDeclaration
-          .getConstructors()
-          .forEach((constructor) => {
-            const constValue = ClassEntry.project.getSourceFileOrThrow(
-              constructor.getSourceFile().getFilePath()
-            );
-
-            constValue.get;
-          });
-      });
-    });
   }
 
   getValue(): ClassType {
     return this.value;
   }
 
-  public static isClass(target: any): target is ClassType {
-    return !(
-      target &&
-      typeof target === "object" &&
-      /^(object|array)$/i.test(target.constructor.name) === false
-    );
-  }
-
-  public getConstructorParams(): string[] {
-    console.log(this.value.prototype.constructor.toString());
-    /*  const params = this.value.constructor
-      .toString()
-      .match(
-        /constructor\s*\(\s*((\w+)\s*:\s*(\w+)(\s*,\s*(\w+\s*:\s*\w+))*)\s*\)/
+  public static isClass(target: any): boolean {
+    function isClass(target: any): target is { new (...args: any[]): any } {
+      return (
+        typeof target === "function" &&
+        /^\s*class\s+/.test(target.toString()) &&
+        Object.getOwnPropertyDescriptor(target, "prototype") != undefined
       );
-*/
-    const params = this.value.constructor
-      .toString()
-      .match(/function[^(]*\(([^)]*)\)/);
-
-    console.log("PARAMS", params);
-
-    if (!params) {
-      return [];
     }
 
-    return params[1].split(",").map((param: string) => param.trim());
+    const isAClass = isClass(target) as boolean;
+
+    return isAClass;
+  }
+
+  public getConstructorParams(): { [key: string]: any } {
+    if (!this.value) {
+      throw new Error("Missconfigured class entry");
+    }
+
+    const injectable: boolean = Reflect.getMetadata(
+      REFLECT_INJECTABLE,
+      this.value
+    );
+
+    if (!injectable) {
+      throw new ElementNotDeclaredAsInjectableException(this.value.name);
+    }
+
+    const constructorLine = this.value.prototype.constructor
+      .toString()
+      .split("\n")
+      .find((line: string) => {
+        return line.includes("constructor");
+      });
+
+    if (!constructorLine) {
+      return {};
+    }
+
+    const params = constructorLine
+      .replace("constructor", "")
+      .replace("(", "")
+      .replace(")", "")
+      .replace("{", "")
+      .replace("}", "")
+      .split(",")
+      .map((param: string) => {
+        return param.trim();
+      });
+
+    if (params) {
+      return {};
+    }
+
+    const types = Reflect.getMetadata(
+      REFLECT_INJECTABLE_PARAMS,
+      this.value.prototype.constructor
+    );
+
+    const paramsWithTypes: { [key: string]: any } = {};
+
+    for (const paramIndex in params) {
+      const type = types[paramIndex];
+
+      paramsWithTypes[paramIndex] = {
+        name: params[paramIndex],
+        type: type,
+      };
+    }
+
+    return paramsWithTypes;
   }
 }

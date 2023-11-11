@@ -8,10 +8,13 @@
     "strict": true,
     "skipLibCheck": true,
     "allowJs": true,
-    "baseUrl": "./src",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./",
     "paths": {
-      "@container/*": ["./container/*"],
-      "@foo/*": ["./foo/*"]
+      "@container/*": ["./src/container/*"],
+      "@foo/*": ["./test/foo/*"]
     }
-  }
+  },
+  "include": ["./src/**/*", "./test/**/*"]
 }

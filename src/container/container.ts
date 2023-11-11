@@ -1,7 +1,11 @@
+import { ElementListener } from "@container/async/element-listener";
+import { REFLECT_INJECTABLE } from "@container/decorators/injectable.decorator";
 import { ClassEntry } from "@container/entry/class.entry";
 import { Entry, EntryValue, ClassType } from "@container/entry/entry";
 import { FunctionEntry } from "@container/entry/function.entry";
 import { ObjectEntry } from "@container/entry/object.entry";
+import { ContainerElementNotFoundException } from "@container/exception/container-element-not-found.exception";
+import { ElementNotDeclaredAsInjectableException } from "@container/exception/element-not-declared-as-injectable.exception";
 import { ContainerKey } from "@container/key/container-key";
 
 export class Container {
@@ -10,38 +14,63 @@ export class Container {
   public register(key: ContainerKey, value: EntryValue) {
     if (ClassEntry.isClass(value)) {
       this.entries.set(key, new ClassEntry(value as ClassType));
-      return;
-    }
-
-    if (typeof value === "function") {
+    } else if (typeof value === "function") {
       this.entries.set(key, new FunctionEntry(value));
-      return;
-    }
-
-    if (typeof value === "object") {
+    } else if (typeof value === "object") {
       this.entries.set(key, new ObjectEntry(value));
-      return;
     }
   }
 
   public resolve<T = any>(key: ContainerKey): T {
     const entry = this.entries.get(key);
+    let value: T | null = null;
 
     if (entry == undefined) {
-      throw new Error(`${key} is not registered`);
+      throw new ContainerElementNotFoundException(key);
     }
 
     if (ClassEntry.isClass(entry.getValue())) {
       let classEntry = entry as unknown as ClassEntry;
-      return this.initialize(classEntry) as T;
+      value = this.initialize(classEntry) as T;
+    } else if (entry.typeName === "function") {
+      value = entry.getValue() as T;
+    } else if (entry.typeName === "object") {
+      value = entry.getValue() as T;
     }
 
-    if (!entry) {
-      throw new Error(`Could not resolve ${key}`);
+    if (!value) {
+      throw new ContainerElementNotFoundException(key);
     }
 
-    return entry.getValue() as T;
+    return value as T;
   }
 
-  private initialize<T = any>(classEntry: ClassEntry) {}
+  private initialize<T = any>(classEntry: ClassEntry) {
+    if (Reflect.getMetadata(REFLECT_INJECTABLE, classEntry.getValue())) {
+      const params = classEntry.getConstructorParams();
+      const types = classEntry.getConstructorParams();
+
+      const args = [];
+
+      for (const paramIndex in params) {
+        const paramValue = this.resolve(types[paramIndex].name);
+
+        if (paramValue == undefined) {
+          throw new ContainerElementNotFoundException(types[paramIndex].name);
+        }
+
+        args.push(paramValue);
+      }
+
+      const classValue = classEntry.getValue();
+
+      const instance = new classValue(...args) as T;
+
+      return instance;
+    } else {
+      throw new ElementNotDeclaredAsInjectableException(
+        classEntry.getValue().name
+      );
+    }
+  }
 }
