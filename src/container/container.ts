@@ -1,5 +1,5 @@
-import { ElementListener } from "@container/async/element-listener";
 import { REFLECT_INJECTABLE } from "@container/decorators/injectable.decorator";
+import { REFLECT_TAG } from "@container/decorators/tag.decorator";
 import { ClassEntry } from "@container/entry/class.entry";
 import { Entry, EntryValue, ClassType } from "@container/entry/entry";
 import { FunctionEntry } from "@container/entry/function.entry";
@@ -7,11 +7,22 @@ import { ObjectEntry } from "@container/entry/object.entry";
 import { ContainerElementNotFoundException } from "@container/exception/container-element-not-found.exception";
 import { ElementNotDeclaredAsInjectableException } from "@container/exception/element-not-declared-as-injectable.exception";
 import { ContainerKey } from "@container/key/container-key";
+import { ContainerTagDecorator } from "@container/tag/container-tag-decorator";
 
 export class Container {
   private entries: Map<ContainerKey, Entry> = new Map();
+  private ContainerTagDecorators: ContainerTagDecorator[] = [];
 
   public register(key: ContainerKey, value: EntryValue) {
+    const tags = Reflect.getMetadata(REFLECT_TAG, value) || [];
+
+    for (const tag of tags) {
+      value = this.ContainerTagDecorators.find((tagDecorator) => {
+        console.log(tagDecorator.name, tag.name);
+        return tagDecorator.name === tag.name;
+      })?.decorator(this, value);
+    }
+
     if (ClassEntry.isClass(value)) {
       this.entries.set(key, new ClassEntry(value as ClassType));
     } else if (typeof value === "function") {
@@ -23,6 +34,7 @@ export class Container {
 
   public resolve<T = any>(key: ContainerKey): T {
     const entry = this.entries.get(key);
+
     let value: T | null = null;
 
     if (entry == undefined) {
@@ -30,8 +42,7 @@ export class Container {
     }
 
     if (ClassEntry.isClass(entry.getValue())) {
-      let classEntry = entry as unknown as ClassEntry;
-      value = this.initialize(classEntry) as T;
+      value = this.initialize(entry as ClassEntry);
     } else if (entry.typeName === "function") {
       value = entry.getValue() as T;
     } else if (entry.typeName === "object") {
@@ -63,8 +74,7 @@ export class Container {
       }
 
       const classValue = classEntry.getValue();
-
-      const instance = new classValue(...args) as T;
+      const instance = new classValue(...args);
 
       return instance;
     } else {
@@ -72,5 +82,9 @@ export class Container {
         classEntry.getValue().name
       );
     }
+  }
+
+  public addTagDecorator(containerTagDecorator: ContainerTagDecorator) {
+    this.ContainerTagDecorators.push(containerTagDecorator);
   }
 }

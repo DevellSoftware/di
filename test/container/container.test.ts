@@ -1,5 +1,8 @@
 import { Container } from "@container/container";
+import { Injectable } from "@container/decorators/injectable.decorator";
+import { Tag } from "@container/decorators/tag.decorator";
 import { FactoryMethod } from "@container/entry/factory.entry";
+import { ContainerTagDecorator } from "@container/tag/container-tag-decorator";
 import { Bar } from "@foo/bar";
 import { Biz } from "@foo/biz";
 import { Zap } from "@foo/zap";
@@ -40,5 +43,29 @@ describe("container", () => {
     const biz = container.resolve<FactoryMethod>("bizFactory");
 
     expect(biz(container)).toBeInstanceOf(Biz);
+  });
+
+  it("should recognize tags and decorators", () => {
+    @Tag("foo")
+    @Injectable()
+    class Doo {
+      changeThis = "foo";
+    }
+
+    container.addTagDecorator(
+      new ContainerTagDecorator("foo", (container, target) => {
+        return class extends target {
+          changeThis = "bar";
+        };
+      })
+    );
+
+    container.register("doo", Doo);
+
+    const dooValue = container.resolve<Doo>("doo");
+
+    console.log(dooValue);
+
+    expect(dooValue.changeThis).toBe("bar");
   });
 });
