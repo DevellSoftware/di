@@ -1,12 +1,27 @@
-# Devell Depenency Injection Container Library
+# 📦 Devell Dependency Injection Library
 
 ## What is this?
 
 This is another library for typescript, written to be as easy to use as possible.
 
+It has (or will have) possibilities that should improve your programming experience vastly,
+but gathering all the best solutions I learned on my software development journey, and decide
+to filter, simplify, and pack into one `simple API` library.
+
 The first thing to do when using it is to create a `Container` class instance.
 
+Then there will come a series of packages that I want to use to stand out for my commercial
+customers.
+
+
+<p align="center">
+    <img src="https://github.com/DevellSoftware/di/assets/1759853/43d2b4b4-f079-4f27-82ef-689e33f1b589">
+</p>
+
+
 ## Show me the code
+
+This is just the simplest snippet:
 
 ```
 import { Container } from "@container/container";
@@ -31,9 +46,25 @@ invoiceRegistry.logger.log("It is working.");
 
 ## Current state
 
-For now there is a requirement to add `@Injectable()` decorator to the class
+For now, there is a requirement to add a `@Injectable()` decorator to the class
 that we want to have autowired.
 
 This is a very early version and a lot will be added.
 
-Contributions are very welcome
+I'm planning to incorporate the Typescript Compiler API.
+
+## Change log
+
+#### 0.0.1
+- Base container setup\n
+- Autowiring
+- Support for classes, functions, and objects 
+###### Plans for 0.0.2
+- Remove the need for an injectable decorator
+- Use Typescript API for achieving more flexibility
+- Finish tags (fix the decorated data clearance)
+
+
+## What if I want to join?
+
+Contributions are very welcome, it would be an honor for me.
