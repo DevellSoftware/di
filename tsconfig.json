@@ -10,11 +10,12 @@
     "allowJs": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
       "@container/*": ["./src/container/*"],
       "@foo/*": ["./test/foo/*"]
     }
   },
-  "include": ["./src/**/*", "./test/**/*"]
+  "include": ["./src/**/*"]
 }
