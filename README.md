@@ -13,11 +13,9 @@ The first thing to do when using it is to create a `Container` class instance.
 Then there will come a series of packages that I want to use to stand out for my commercial
 customers.
 
-
 <p align="center">
     <img src="https://github.com/DevellSoftware/di/assets/1759853/43d2b4b4-f079-4f27-82ef-689e33f1b589">
 </p>
-
 
 ## Show me the code
 
@@ -56,14 +54,20 @@ I'm planning to incorporate the Typescript Compiler API.
 ## Change log
 
 #### 0.0.1
+
 - Base container setup\n
 - Autowiring
-- Support for classes, functions, and objects 
-###### Plans for 0.0.2
+- Support for classes, functions, and objects
+
+#### 0.0.2023
+
+- Exporting decoratora bug fixed
+
+###### Plans for 1.0.0
+
 - Remove the need for an injectable decorator
 - Use Typescript API for achieving more flexibility
 - Finish tags (fix the decorated data clearance)
-
 
 ## What if I want to join?
 
