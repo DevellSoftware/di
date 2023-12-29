@@ -59,7 +59,7 @@ I'm planning to incorporate the Typescript Compiler API.
 - Autowiring
 - Support for classes, functions, and objects
 
-### 0.0.2
+#### 0.0.2
 
 - Minor fixes in tests
 
@@ -78,6 +78,10 @@ I'm planning to incorporate the Typescript Compiler API.
 #### 0.0.6
 
 - Updated the readme
+
+#### 0.0.7
+
+- Added built dist to the registry, using .npmignore
 
 ###### Plans for 1.0.0
 
