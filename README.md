@@ -55,11 +55,15 @@ I'm planning to incorporate the Typescript Compiler API.
 
 #### 0.0.1
 
-- Base container setup\n
+- Base container setup
 - Autowiring
 - Support for classes, functions, and objects
 
-#### 0.0.2023
+### 0.0.2
+
+- Minor fixes in tests
+
+#### 0.0.3
 
 - Exporting decoratora bug fixed
 

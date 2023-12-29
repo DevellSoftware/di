@@ -1,8 +1,9 @@
 {
   "name": "@devell/di",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Devell Dependency Injection Container Library",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/DevellSoftware/di",
   "author": "Filip Gorny",
   "license": "MIT",
