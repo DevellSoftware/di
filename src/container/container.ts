@@ -18,7 +18,6 @@ export class Container {
 
     for (const tag of tags) {
       value = this.ContainerTagDecorators.find((tagDecorator) => {
-        console.log(tagDecorator.name, tag.name);
         return tagDecorator.name === tag.name;
       })?.decorator(this, value);
     }

@@ -64,8 +64,6 @@ describe("container", () => {
 
     const dooValue = container.resolve<Doo>("doo");
 
-    console.log(dooValue);
-
     expect(dooValue.changeThis).toBe("bar");
   });
 });
