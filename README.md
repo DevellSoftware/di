@@ -67,6 +67,18 @@ I'm planning to incorporate the Typescript Compiler API.
 
 - Exporting decoratora bug fixed
 
+#### 0.0.4
+
+- Added declaration file entry in tsconfig.json and package.json
+
+#### 0.0.5
+
+- Removed console logs from tests
+
+#### 0.0.6
+
+- Updated the readme
+
 ###### Plans for 1.0.0
 
 - Remove the need for an injectable decorator
